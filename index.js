@@ -22,7 +22,7 @@ function Monitor(opts) {
   if (!(this instanceof Monitor)) {
     return new Monitor(opts);
   }
-  
+
   var self = this;
 
   this.opts = opts || {};
@@ -72,23 +72,25 @@ function Monitor(opts) {
       client.do.transmit_binary()
 
       // make the client emit the window size
-      client.do.window_size()
+      // client.do.window_size()
 
       // force the client into character mode
       client.do.suppress_go_ahead()
       client.will.suppress_go_ahead()
       client.will.echo()
 
-      self.cursor = ansi(client, { enabled: true });   
+      self.cursor = ansi(client, { enabled: true });
 
+      /*
       client.on('window size', function(e) {
         if (e.width && e.height) {
           self.opts.width = e.width;
           self.opts.height = e.height;
           self._renderTitle();
-          self._renderBody();          
+          self._renderBody();
         }
       });
+      */
 
       keypress(client);
 
@@ -99,7 +101,7 @@ function Monitor(opts) {
       self._renderTitle();
       self._attemptBodyRender();
     }).listen(this.opts.port);
-    
+
     console.log('monitor.io: server listening on '+ this.opts.port);
     if (this.opts.localOnly) {
       console.log('monitor.io: will only accept connections from 127.0.0.1');
@@ -202,7 +204,7 @@ Monitor.prototype._getWindowSize = function() {
 Monitor.prototype._getVisibleSockets = function() {
   var socketIDs = Object.keys(this.sockets),
     windowHeight = this._getWindowSize().height;
-  
+
   return (socketIDs.length > windowHeight - 5) ? windowHeight - 5 : socketIDs.length;
 };
 
@@ -289,7 +291,7 @@ Monitor.prototype._monitorFn = function(socket, name, value) {
     }
   } else if (typeof arguments[1] === 'string') {
     if (value === undefined) {
-      return socket._monitor[name];    
+      return socket._monitor[name];
     } else {
       socket._monitor[name] = value;
       if (this.running) {
@@ -305,7 +307,7 @@ Monitor.prototype._moveCursor = function(y) {
 
   if (this.selected + y < socketCount && this.selected + y > -1) {
     this.selected += y;
-    
+
     if (this.selected > this._getVisibleSockets() - 1 || this.selected < this.scrollY) {
       this._scrollY(y);
     }
@@ -532,7 +534,7 @@ Monitor.prototype._switchEmitMode = function(mode) {
   var evtData,
     socketIDs = Object.keys(this.sockets),
     self = this;
-  
+
   this.emitMode = mode;
 
   if (mode === 1) {
@@ -548,7 +550,7 @@ Monitor.prototype._switchEmitMode = function(mode) {
       this.cursor.write("\nInvalid JSON data.");
       this.emitMode -= 1;
       this.emitBuffer[2] = '';
-      
+
       setInterval(function() {
         self._renderEmit();
       }, 1000);
@@ -564,7 +566,7 @@ Monitor.prototype._switchEmitMode = function(mode) {
       this.emitSocket.emit(this.emitBuffer[1], evtData);
     }
   }
-  
+
   if (mode === 3){
     // render the final stage, then switch out of emit mode
     this._renderEmit();
