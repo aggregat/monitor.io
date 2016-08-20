@@ -17,7 +17,7 @@
   "dependencies": {
     "ansi": "^0.3.0",
     "keypress": "^0.2.1",
-    "telnet": "pghalliday/node-telnet"
+    "telnet": "aggregat/node-telnet"
   },
   "license": "MIT",
   "homepage": "https://drewblaisdell.github.io/monitor.io",
